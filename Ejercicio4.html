@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Encriptador</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.0.0/crypto-js.min.js"></script>
+  <script>
+    function encriptarTexto() {
+      var textoOriginal = document.getElementById('textoOriginal').value;
+      var clave = "MiClaveSecreta"; 
+      
+      var textoCifrado = CryptoJS.AES.encrypt(textoOriginal, clave).toString();
+      
+      document.getElementById('textoCifrado').innerHTML = "Texto cifrado: " + textoCifrado;
+    }
+  </script>
+</head>
+<body>
+  <h1>Encriptador</h1>
+  <label for="textoOriginal">Texto Original:</label>
+  <input type="text" id="textoOriginal">
+  <br>
+  <button onclick="encriptarTexto()">Encriptar</button>
+  <p id="textoCifrado"></p>
+</body>
+</html>

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora Económica</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+        }
+        .result {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Indicadores</h1>
+        <div id="UF"></div>
+        <div id="DolarO"></div>
+        <div id="DolarA"></div>
+        <div id="Euro"></div>
+        <div id="IPC"></div>
+        <div id="UTM"></div>
+        <div id="IVP"></div>
+        <div id="Imacec"></div>
+
+        <h2>Calculadora</h2>
+        <form id="calculatorForm">
+            <label for="amount">Cantidad en CLP:</label>
+            <input type="number" id="amount" required>
+            <br><br>
+            <label for="indicator">Selecciona el indicador:</label>
+            <select id="indicator">
+                <option value="uf">UF</option>
+                <option value="euro">Euro</option>
+                <option value="utm">UTM</option>
+            </select>
+            <br><br>
+            <button type="submit">Calcular</button>
+        </form>
+
+        <div class="result" id="result"></div>
+    </div>
+
+    <script>
+        let indicators = {};
+
+        fetch('https://mindicador.cl/api')
+            .then(function(response) {
+                return response.json();
+            })
+            .then(function(dailyIndicators) {
+                indicators = dailyIndicators;
+                document.getElementById("UF").innerHTML = 'El valor actual de la UF es $' + dailyIndicators.uf.valor;
+                document.getElementById("DolarO").innerHTML = 'El valor actual del Dólar observado es $' + dailyIndicators.dolar.valor;
+                document.getElementById("DolarA").innerHTML = 'El valor actual del Dólar acuerdo es $' + dailyIndicators.dolar_intercambio.valor;
+                document.getElementById("Euro").innerHTML = 'El valor actual del Euro es $' + dailyIndicators.euro.valor;
+                document.getElementById("IPC").innerHTML = 'El valor actual del IPC es ' + dailyIndicators.ipc.valor;
+                document.getElementById("UTM").innerHTML = 'El valor actual de la UTM es $' + dailyIndicators.utm.valor;
+                document.getElementById("IVP").innerHTML = 'El valor actual del IVP es $' + dailyIndicators.ivp.valor;
+                document.getElementById("Imacec").innerHTML = 'El valor actual del Imacec es ' + dailyIndicators.imacec.valor;
+            })
+            .catch(function(error) {
+                console.log('Request failed', error);
+            });
+
+        document.getElementById('calculatorForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const amount = parseFloat(document.getElementById('amount').value);
+            const indicator = document.getElementById('indicator').value;
+            const result = amount / indicators[indicator].valor;
+            document.getElementById('result').innerHTML = `El valor de ${amount} CLP en ${indicator.toUpperCase()} es: ${result.toFixed(2)}`;
+        });
+    </script>
+</body>
+</html>
